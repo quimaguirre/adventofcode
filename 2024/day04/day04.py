@@ -1,5 +1,7 @@
 import re
 
+#### PART 1 ####
+
 # Based on: https://stackoverflow.com/questions/6313308/get-all-the-diagonals-in-a-matrix-list-of-lists-in-python
 
 matrix = []
@@ -10,6 +12,7 @@ with open('input.txt') as input_fd:
 max_row = len(matrix[0])
 max_col = len(matrix)
 
+# Get all columns, rows and forward/backwards diagonals
 matrix_lines = {}
 matrix_lines["cols"] = [[] for _ in range(max_col)]
 matrix_lines["rows"] = [[] for _ in range(max_row)]
@@ -24,6 +27,7 @@ for x in range(max_col):
         matrix_lines["fdiag"][x + y].append(matrix[y][x])
         matrix_lines["bdiag"][x - y - min_bdiag].append(matrix[y][x])
 
+# Iterate through each type of line and search for the substring XMAS or SAMX
 xmas_counts = 0
 
 for type_line in matrix_lines.keys():
@@ -34,6 +38,11 @@ for type_line in matrix_lines.keys():
 
 print(xmas_counts)
 
+
+#### PART 2 ####
+
+# Iterate through each row, search for the indexes of 'A's, and then check the
+# two diagonals to see if the substrings 'MAS' or 'SAM' are there
 xmas_counts2 = 0
 
 for i, line in enumerate(matrix_lines["rows"]):
