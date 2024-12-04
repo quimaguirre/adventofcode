@@ -1,3 +1,5 @@
+import re
+
 # Based on: https://stackoverflow.com/questions/6313308/get-all-the-diagonals-in-a-matrix-list-of-lists-in-python
 
 matrix = []
@@ -8,38 +10,44 @@ with open('input.txt') as input_fd:
 max_row = len(matrix[0])
 max_col = len(matrix)
 
-cols = [[] for _ in range(max_col)]
-rows = [[] for _ in range(max_row)]
-fdiag = [[] for _ in range(max_row + max_col - 1)]
-bdiag = [[] for _ in range(len(fdiag))]
+matrix_lines = {}
+matrix_lines["cols"] = [[] for _ in range(max_col)]
+matrix_lines["rows"] = [[] for _ in range(max_row)]
+matrix_lines["fdiag"] = [[] for _ in range(max_row + max_col - 1)]
+matrix_lines["bdiag"] = [[] for _ in range(len(matrix_lines["fdiag"]))]
 min_bdiag = -max_row + 1
 
 for x in range(max_col):
     for y in range(max_row):
-        cols[x].append(matrix[y][x])
-        rows[y].append(matrix[y][x])
-        fdiag[x+y].append(matrix[y][x])
-        bdiag[x-y-min_bdiag].append(matrix[y][x])
+        matrix_lines["cols"][x].append(matrix[y][x])
+        matrix_lines["rows"][y].append(matrix[y][x])
+        matrix_lines["fdiag"][x + y].append(matrix[y][x])
+        matrix_lines["bdiag"][x - y - min_bdiag].append(matrix[y][x])
 
-horizontal_straight = 0
-horizontal_backwards = 0
-vertical_straight = 0
-vertical_backwards = 0
-fdiag_straight = 0
-fdiag_backwards = 0
+xmas_counts = 0
 
-for row in rows:
-    row = ''.join(row)
-    horizontal_straight += row.count('XMAS')
-    horizontal_backwards += row.count('SAMX')
+for type_line in matrix_lines.keys():
+    for line in matrix_lines[type_line]:
+        line = ''.join(line)
+        xmas_counts += line.count('XMAS')
+        xmas_counts += line.count('SAMX')
 
-print(horizontal_straight)
-print(horizontal_backwards)
+print(xmas_counts)
 
-for col in cols:
-    col = ''.join(col)
-    vertical_straight += col.count('XMAS')
-    vertical_backwards += col.count('SAMX')
+xmas_counts2 = 0
 
-print(vertical_straight)
-print(vertical_backwards)
+for i, line in enumerate(matrix_lines["rows"]):
+    if i > 0 and i < (max_row - 1):
+        substring_indexes = [m.start() for m in re.finditer('(?=A)', ''.join(line))]
+        for substring_index in substring_indexes:
+            if substring_index > 0 and substring_index < (max_col - 1):
+                upper_back = matrix_lines["rows"][i - 1][substring_index - 1]
+                lower_fwd = matrix_lines["rows"][i + 1][substring_index + 1]
+                upper_fwd = matrix_lines["rows"][i - 1][substring_index + 1]
+                lower_back = matrix_lines["rows"][i + 1][substring_index - 1]
+                diag1 = ''.join([upper_back, 'A', lower_fwd])
+                diag2 = ''.join([upper_fwd, 'A', lower_back])
+                if diag1 in ['MAS', 'SAM'] and diag2 in ['MAS', 'SAM']:
+                    xmas_counts2 += 1
+
+print(xmas_counts2)
