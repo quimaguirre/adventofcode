@@ -58,6 +58,7 @@ Because there is now an obstacle in front of the guard, she turns right before c
 
 Reaching another obstacle (a spool of several very long polymers), she turns right again and continues downward:
 
+```
 ....#.....
 .........#
 ..........
@@ -68,6 +69,8 @@ Reaching another obstacle (a spool of several very long polymers), she turns rig
 ........#.
 #.........
 ......#...
+```
+
 This process continues for a while, but the guard eventually leaves the mapped area (after walking past a tank of universal solvent):
 
 ```
